@@ -59,15 +59,14 @@ def creates(resource):
 class BaseKeyManagerTest(test.BaseTestCase):
     """Base class for all api tests."""
 
-    # Why do I have to be an admin to create secrets? No idea...
-    credentials = ('admin', ['service_admin', 'key-manager:service-admin'])
+    credentials = ('admin', 'primary')
     client_manager = clients.Clients
     created_objects = {}
 
     @classmethod
     def setup_clients(cls):
         super(BaseKeyManagerTest, cls).setup_clients()
-        os = getattr(cls, 'os_%s' % cls.credentials[0])
+        os = getattr(cls, 'os_%s' % cls.credentials[1])
         cls.consumer_client = os.secret_v1.ConsumerClient(
             service='key-manager'
         )
@@ -79,8 +78,6 @@ class BaseKeyManagerTest(test.BaseTestCase):
         cls.secret_metadata_client = os.secret_v1.SecretMetadataClient(
             service='key-manager'
         )
-
-        os = getattr(cls, 'os_roles_%s' % cls.credentials[1][0])
         cls.quota_client = os.secret_v1.QuotaClient(service='key-manager')
 
     @classmethod
